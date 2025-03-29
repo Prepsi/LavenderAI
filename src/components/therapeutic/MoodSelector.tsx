@@ -5,10 +5,11 @@ import { cn } from '@/lib/utils';
 
 const moods = [
   { value: 'veryHappy', emoji: '😄', label: 'Very Happy', color: 'bg-therapeutic-softGreen' },
-  { value: 'happy', emoji: '🙂', label: 'Happy', color: 'bg-therapeutic-softYellow' },
   { value: 'neutral', emoji: '😐', label: 'Neutral', color: 'bg-therapeutic-softBlue' },
   { value: 'sad', emoji: '😔', label: 'Sad', color: 'bg-therapeutic-purple/20' },
-  { value: 'verySad', emoji: '😢', label: 'Very Sad', color: 'bg-therapeutic-darkPurple/20' },
+  { value: 'angry', emoji: '😡', label: 'Angry', color: 'bg-therapeutic-red/20' },
+  { value: 'anxious', emoji: '😰', label: 'Anxious', color: 'bg-therapeutic-orange/20' },
+  { value: 'excited', emoji: '🤩', label: 'Excited', color: 'bg-therapeutic-softPink' },
 ];
 
 interface MoodSelectorProps {
