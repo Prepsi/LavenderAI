@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, Mic, Music } from "lucide-react";
 import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 interface Message {
@@ -14,28 +14,26 @@ interface Message {
   timestamp: Date;
 }
 
-const initialMessages: Message[] = [
-  {
-    id: "1",
-    text: "Hey there! Tell me how you're feeling today.",
-    sender: "ai",
-    timestamp: new Date(),
-  },
-];
+const messageArray: Message[] = [];
 
-const initialPrompt = `Listen to the user with compassion and provide them reassuance and support for their feelings.`;
+const initialPrompt = `
+Listen to the user with compassion and provide them reassuance and support for their feelings.
+Do not use an asterisk (*) to emphasize words.
+Keep your responses short and simple like a conversation.
+Do not exceed 200 characters in a single response.
+First, respond with this: "Hey there! Tell me how you're feeling today."
+`;
 
 const TherapistChat: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
+  // state for storing all messages
+  const [messages, setMessages] = useState<Message[]>(messageArray);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const apiKey = "AIzaSyBEcoVu-L4ZgaCBcaEcDdX2Q2YAzmxcD8g";
-
-  const ssendMessage = useMutation({
-    mutationFn: (input: string) => {
+  const initPrompt = useMutation({
+    mutationFn: () => {
       return axios.post("http://localhost:3001/generate", {
         prompt: initialPrompt,
       });
@@ -44,7 +42,12 @@ const TherapistChat: React.FC = () => {
       // call the next function
       setMessages((prev) => [
         ...prev,
-        { id: "2", text: data.data.text, sender: "ai", timestamp: new Date() },
+        {
+          id: (Date.now() + 1).toString(),
+          text: data.data.text,
+          sender: "ai",
+          timestamp: new Date(),
+        },
       ]);
     },
     onError: (error) => {
@@ -52,107 +55,82 @@ const TherapistChat: React.FC = () => {
     },
   });
 
-  // const sendMessage = async () => {
-  //   if (!input.trim()) return;
+  useEffect(() => {
+    initPrompt.mutate();
+  }, []);
 
-  //   const userMessage: Message = {
-  //     id: Date.now().toString(),
-  //     text: input,
-  //     sender: "user",
-  //     timestamp: new Date(),
-  //   };
+  const sendMessage = useMutation({
+    mutationFn: (input: string) => {
+      return axios.post("http://localhost:3001/generate", {
+        prompt: input,
+      });
+    },
+    onMutate: () => {
+      // Show temporary typing bubble
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: (Date.now() + 1).toString(),
+          text: "...",
+          sender: "ai",
+          timestamp: new Date(),
+        },
+      ]);
+    },
+    onSuccess: (data) => {
+      // call the next function
+      setMessages((prev) => {
+        const newMessages = [...prev];
+        newMessages[newMessages.length - 1] = {
+          // Replace last message (typing bubble)
+          id: (Date.now() + 1).toString(),
+          text: data.data.text,
+          sender: "ai",
+          timestamp: new Date(),
+        };
+        return newMessages;
+      });
+    },
+    onError: (error) => {
+      console.error("Error:", (error as Error).message);
+    },
+  });
 
-  //   setMessages((prev) => [...prev, userMessage]);
-  //   setInput("");
-  //   setIsLoading(true);
+  const handleSend = (e) => {
+    e.preventDefault();
+    if (!input.trim()) return;
 
-  //   try {
-  //     const response = await callGeminiAPI(input);
-
-  //     const aiMessage: Message = {
-  //       id: (Date.now() + 1).toString(),
-  //       text: response,
-  //       sender: "ai",
-  //       timestamp: new Date(),
-  //     };
-
-  //     setMessages((prev) => [...prev, aiMessage]);
-  //   } catch (error) {
-  //     console.error("Error calling Gemini API:", error);
-  //     toast.error("Sorry, I had trouble responding. Please try again.");
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-  // // Call the Gemini API to generate a response
-  // const callGeminiAPI = async (userInput: string): Promise<string> => {
-  //   try {
-  //     const response = await fetch(
-  //       `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({
-  //           contents: [
-  //             {
-  //               parts: [
-  //                 {
-  //                   text: `You are a compassionate, professional psychiatrist. Your goal is to provide supportive therapeutic responses to the user. Be empathetic, reflective, and focus on the user's emotions and experiences. Suggest healthy coping mechanisms when appropriate and occasionally recommend music therapy. Keep responses concise and conversational. The user says: ${userInput}`,
-  //                 },
-  //               ],
-  //             },
-  //           ],
-  //           generationConfig: {
-  //             temperature: 0.7,
-  //             topK: 40,
-  //             topP: 0.95,
-  //             maxOutputTokens: 1024,
-  //           },
-  //           safetySettings: [
-  //             {
-  //               category: "HARM_CATEGORY_HARASSMENT",
-  //               threshold: "BLOCK_MEDIUM_AND_ABOVE",
-  //             },
-  //             {
-  //               category: "HARM_CATEGORY_HATE_SPEECH",
-  //               threshold: "BLOCK_MEDIUM_AND_ABOVE",
-  //             },
-  //             {
-  //               category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-  //               threshold: "BLOCK_MEDIUM_AND_ABOVE",
-  //             },
-  //             {
-  //               category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-  //               threshold: "BLOCK_MEDIUM_AND_ABOVE",
-  //             },
-  //           ],
-  //         }),
-  //       }
-  //     );
-
-  //     const data = await response.json();
-
-  //     if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
-  //       const response = data.candidates[0].content.parts[0].text;
-  //       return response;
-  //     } else if (data.promptFeedback?.blockReason) {
-  //       return "I'm unable to respond to that. Let's discuss something else that might help you.";
-  //     } else {
-  //       throw new Error("Unexpected API response structure");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error in Gemini API call:", error);
-  //     return "I apologize, but I'm having trouble connecting right now. Could you please try again in a moment?";
-  //   }
-  // };
+    // Add the user's message to the chat
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now().toString(),
+        text: input,
+        sender: "user",
+        timestamp: new Date(),
+      },
+    ]);
+    sendMessage.mutate(input);
+    setInput("");
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      ssendMessage.mutate(input);
+      if (!input.trim()) return;
+
+      // Add the user's message to the chat
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now().toString(),
+          text: input,
+          sender: "user",
+          timestamp: new Date(),
+        },
+      ]);
+
+      sendMessage.mutate(input);
     }
   };
 
@@ -162,7 +140,7 @@ const TherapistChat: React.FC = () => {
         <div className="space-y-4">
           {messages.map((msg) => (
             <div
-              key={msg.id}
+              key={msg.text}
               className={
                 msg.sender === "user" ? "chat-message-user" : "chat-message-ai"
               }
@@ -200,7 +178,7 @@ const TherapistChat: React.FC = () => {
           />
 
           <Button
-            onClick={() => ssendMessage.mutate(input)}
+            onClick={handleSend}
             size="icon"
             className="shrink-0 bg-therapeutic-purple hover:bg-therapeutic-darkPurple"
             disabled={isLoading || !input.trim()}
