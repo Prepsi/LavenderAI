@@ -49,9 +49,9 @@ const Index = () => {
           </section>
           
           <section>
-            <h2 className="text-2xl font-semibold text-therapeutic-deepPurple mb-6">Support Options</h2>
+            <h2 className="text-2xl font-semibold text-therapeutic-deepPurple mb-6 text-center">Support Options</h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid justify-items-center grid-cols-1 md:grid-cols-2 gap-4">
               <Card className="therapeutic-card hover:shadow-md transition-all border-therapeutic-purple/10 hover:border-therapeutic-purple/30">
                 <CardContent className="p-6 flex flex-col items-center text-center">
                   <div className="h-12 w-12 rounded-full bg-therapeutic-softBlue flex items-center justify-center mb-4">

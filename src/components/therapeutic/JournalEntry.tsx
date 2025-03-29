@@ -75,15 +75,6 @@ const JournalEntry: React.FC<JournalEntryProps> = ({ onSave }) => {
         </CardContent>
         <CardFooter className="flex justify-between">
           <Button
-            variant="outline"
-            onClick={analyzeEntry}
-            disabled={isAnalyzing || !content.trim()}
-            className="text-therapeutic-darkPurple"
-          >
-            <Brain className="mr-2 h-4 w-4" />
-            {isAnalyzing ? "Analyzing..." : "Analyze"}
-          </Button>
-          <Button
             onClick={handleSave}
             disabled={!content.trim()}
             className="bg-therapeutic-purple hover:bg-therapeutic-darkPurple"
