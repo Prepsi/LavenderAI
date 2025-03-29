@@ -41,7 +41,7 @@ const Navbar = () => {
             </Link>
           </Button>
           
-          <Button asChild variant="ghost" size={isMobile ? "icon" : "default"} className="text-therapeutic-darkPurple">
+          {/* <Button asChild variant="ghost" size={isMobile ? "icon" : "default"} className="text-therapeutic-darkPurple">
             <Link to="/music">
               {isMobile ? <Music className="h-5 w-5" /> : (
                 <>
@@ -50,7 +50,7 @@ const Navbar = () => {
                 </>
               )}
             </Link>
-          </Button>
+          </Button> */}
           
           <Button asChild variant="ghost" size={isMobile ? "icon" : "default"} className="text-therapeutic-darkPurple">
             <Link to="/journal">
@@ -63,7 +63,7 @@ const Navbar = () => {
             </Link>
           </Button>
           
-          <Button asChild variant="ghost" size={isMobile ? "icon" : "default"} className="text-therapeutic-darkPurple">
+          {/* <Button asChild variant="ghost" size={isMobile ? "icon" : "default"} className="text-therapeutic-darkPurple">
             <Link to="/mood-tracker">
               {isMobile ? <Calendar className="h-5 w-5" /> : (
                 <>
@@ -71,8 +71,8 @@ const Navbar = () => {
                   Mood
                 </>
               )}
-            </Link>
-          </Button>
+            </Link> */}
+          {/* </Button> */}
         </div>
       </div>
     </nav>
