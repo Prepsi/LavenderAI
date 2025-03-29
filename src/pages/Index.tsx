@@ -67,7 +67,7 @@ const Index = () => {
                 </CardContent>
               </Card>
               
-              <Card className="therapeutic-card hover:shadow-md transition-all border-therapeutic-purple/10 hover:border-therapeutic-purple/30">
+              {/* <Card className="therapeutic-card hover:shadow-md transition-all border-therapeutic-purple/10 hover:border-therapeutic-purple/30">
                 <CardContent className="p-6 flex flex-col items-center text-center">
                   <div className="h-12 w-12 rounded-full bg-therapeutic-softGreen flex items-center justify-center mb-4">
                     <Music className="h-6 w-6 text-therapeutic-darkPurple" />
@@ -80,7 +80,7 @@ const Index = () => {
                     </Button>
                   </Link>
                 </CardContent>
-              </Card>
+              </Card> */}
               
               <Card className="therapeutic-card hover:shadow-md transition-all border-therapeutic-purple/10 hover:border-therapeutic-purple/30">
                 <CardContent className="p-6 flex flex-col items-center text-center">
@@ -97,7 +97,7 @@ const Index = () => {
                 </CardContent>
               </Card>
               
-              <Card className="therapeutic-card hover:shadow-md transition-all border-therapeutic-purple/10 hover:border-therapeutic-purple/30">
+              {/* <Card className="therapeutic-card hover:shadow-md transition-all border-therapeutic-purple/10 hover:border-therapeutic-purple/30">
                 <CardContent className="p-6 flex flex-col items-center text-center">
                   <div className="h-12 w-12 rounded-full bg-therapeutic-softPeach flex items-center justify-center mb-4">
                     <HeartPulse className="h-6 w-6 text-therapeutic-darkPurple" />
@@ -110,7 +110,7 @@ const Index = () => {
                     </Button>
                   </Link>
                 </CardContent>
-              </Card>
+              </Card> */}
             </div>
           </section>
         </div>
