@@ -1,2 +1,2 @@
-# Business_Analyst_AI
+# FinGenius
 Business Analyst tool using Gemini AI. Created during the UTA Hackday Spring 2025
