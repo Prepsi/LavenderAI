@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,16 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Mental Health Companion custom colors
+				therapeutic: {
+					purple: '#9b87f5',
+					darkPurple: '#7E69AB',
+					deepPurple: '#6E59A5',
+					softBlue: '#D3E4FD',
+					softGreen: '#F2FCE2',
+					softYellow: '#FEF7CD',
+					softPeach: '#FDE1D3'
 				}
 			},
 			borderRadius: {
@@ -84,11 +95,21 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'pulse-gentle': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.8' }
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-5px)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse-gentle': 'pulse-gentle 3s ease-in-out infinite',
+				'float': 'float 6s ease-in-out infinite'
 			}
 		}
 	},
