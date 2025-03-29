@@ -19,10 +19,13 @@ const messageArray: Message[] = [];
 const initialPrompt = `
 Listen to the user with compassion and provide them reassuance and support for their feelings.
 Do not use an asterisk (*) to emphasize words.
+Keep your responses short and simple like a conversation.
+Do not exceed 200 characters in a single response.
 First, respond with this: "Hey there! Tell me how you're feeling today."
 `;
 
 const TherapistChat: React.FC = () => {
+  // state for storing all messages
   const [messages, setMessages] = useState<Message[]>(messageArray);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -62,17 +65,31 @@ const TherapistChat: React.FC = () => {
         prompt: input,
       });
     },
-    onSuccess: (data) => {
-      // call the next function
+    onMutate: () => {
+      // Show temporary typing bubble
       setMessages((prev) => [
         ...prev,
         {
           id: (Date.now() + 1).toString(),
-          text: data.data.text,
+          text: "...",
           sender: "ai",
           timestamp: new Date(),
         },
       ]);
+    },
+    onSuccess: (data) => {
+      // call the next function
+      setMessages((prev) => {
+        const newMessages = [...prev];
+        newMessages[newMessages.length - 1] = {
+          // Replace last message (typing bubble)
+          id: (Date.now() + 1).toString(),
+          text: data.data.text,
+          sender: "ai",
+          timestamp: new Date(),
+        };
+        return newMessages;
+      });
     },
     onError: (error) => {
       console.error("Error:", (error as Error).message);
@@ -81,7 +98,18 @@ const TherapistChat: React.FC = () => {
 
   const handleSend = (e) => {
     e.preventDefault();
-    console.log("input", input);
+    if (!input.trim()) return;
+
+    // Add the user's message to the chat
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now().toString(),
+        text: input,
+        sender: "user",
+        timestamp: new Date(),
+      },
+    ]);
     sendMessage.mutate(input);
     setInput("");
   };
@@ -89,6 +117,19 @@ const TherapistChat: React.FC = () => {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
+      if (!input.trim()) return;
+
+      // Add the user's message to the chat
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now().toString(),
+          text: input,
+          sender: "user",
+          timestamp: new Date(),
+        },
+      ]);
+
       sendMessage.mutate(input);
     }
   };
@@ -137,7 +178,7 @@ const TherapistChat: React.FC = () => {
           />
 
           <Button
-            onClick={() => handleSend}
+            onClick={handleSend}
             size="icon"
             className="shrink-0 bg-therapeutic-purple hover:bg-therapeutic-darkPurple"
             disabled={isLoading || !input.trim()}
